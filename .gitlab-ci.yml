@@ -27,6 +27,7 @@ build_image:
   stage: build
   only:
     - qa
+    - master
   resource_group: $CI_PROJECT_NAME
   script:
     # Docker Build && Push image
