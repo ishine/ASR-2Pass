@@ -2,7 +2,7 @@ variables:
   CD_CHART_REPOS: 'asr-2pass'
   IMAGE_NAMES: 'asr-2pass'
   SVN_REPO_URL: 'svn://svn-local.xmov.ai/repository/AlgModels/ASR/latest/models'
-  SVN_LOCAL_PATH: '/data/nas/xmov_app/asr-2pass/svn/models'
+  SVN_LOCAL_PATH: '/data/nas/xmov_app/asr-2pass/svn/latest/models'
 
 
 include:
@@ -28,10 +28,26 @@ build_image:
   only:
     - qa
     - master
+    - V2.0.0_private
   resource_group: $CI_PROJECT_NAME
   script:
     # Docker Build && Push image
     - |
+      if [[ "$CI_COMMIT_REF_NAME" == "V2.0.0_private" ]]; then
+        echo "Working at private branch, changing svn path..."
+        SVN_REPO_URL=svn://svn-local.xmov.ai/repository/AlgModels/ASR/V2.0.0_private/models
+        SVN_LOCAL_PATH=/data/nas/xmov_app/asr-2pass/svn/V2.0.0_private/models
+      elif [[ "$CI_COMMIT_REF_NAME" == "master" ]]; then
+        echo "Working at private branch, changing svn path..."
+        SVN_REPO_URL=svn://svn-local.xmov.ai/repository/AlgModels/ASR/pre/models
+        SVN_LOCAL_PATH=/data/nas/xmov_app/asr-2pass/svn/pre/models
+      else
+        echo "No need to change svn path."
+      fi
+
+      echo "SVN_REPO_URL=$SVN_REPO_URL"
+      echo "SVN_LOCAL_PATH=$SVN_LOCAL_PATH"
+
       if [ -d "$SVN_LOCAL_PATH/.svn" ]; then
         echo "SVN working copy exists. Updating..."
         svn update "$SVN_LOCAL_PATH" --username "$SVN_USERNAME" --password "$SVN_PASSWORD"
