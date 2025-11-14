@@ -507,6 +507,7 @@ void WebSocketServer::on_message(websocketpp::connection_hdl hdl,
       }
       if (jsonresult.contains("itn")) {
         msg_data->msg["itn"] = jsonresult["itn"];
+        msg_data->msg["svs_itn"] = jsonresult["itn"];  // use itn to control svs_itn as well
       }
       if (jsonresult.contains("vad_tail_sil")) {
           msg_data->msg["vad_tail_sil"] = jsonresult["vad_tail_sil"];
@@ -518,9 +519,9 @@ void WebSocketServer::on_message(websocketpp::connection_hdl hdl,
       if (jsonresult.contains("svs_lang")) {
         msg_data->msg["svs_lang"] = jsonresult["svs_lang"];
       }
-      if (jsonresult.contains("svs_itn")) {
-        msg_data->msg["svs_itn"] = jsonresult["svs_itn"];
-      }
+      // if (jsonresult.contains("svs_itn")) {
+      //   msg_data->msg["svs_itn"] = jsonresult["svs_itn"];
+      // }
       LOG(INFO) << "jsonresult=" << jsonresult
                 << ", msg_data->msg=" << msg_data->msg;
       if ((jsonresult["is_speaking"] == false ||

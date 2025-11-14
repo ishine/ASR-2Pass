@@ -64,7 +64,7 @@ parser.add_argument("--ssl",
                     type=int,
                     default=0,
                     help="1 for ssl connect, 0 for no ssl")
-parser.add_argument("--use_itn",
+parser.add_argument("--itn",
                     type=int,
                     default=1,
                     help="1 for using itn, 0 for not itn")
@@ -78,10 +78,11 @@ parser.add_argument("--vad_max_len",
                     default=20000,
                     help="max duration of a audio clip cut by VAD, in ms")
 
-parser.add_argument("--svs_itn",
-                    type=int,
-                    default=1,
-                    help="1 for SenseVoice model using itn, 0 for not itn")
+# we use itn to control whether to use itn in SenseVoice also.
+# parser.add_argument("--svs_itn",
+#                     type=int,
+#                     default=1,
+#                     help="1 for SenseVoice model using itn, 0 for not itn")
 parser.add_argument("--svs_lang",
                     type=str,
                     default='auto',
@@ -147,13 +148,9 @@ async def record_microphone():
             except ValueError:
                 print("Please checkout format of hotwords")
         hotword_msg=json.dumps(fst_dict)
-
-    use_itn=True
-    if args.use_itn == 0:
-        use_itn=False
     
     message = json.dumps({"mode": args.mode, "chunk_size": args.chunk_size, "chunk_interval": args.chunk_interval,
-                          "wav_name": "microphone", "is_speaking": True, "hotwords":hotword_msg, "itn": use_itn, "svs_itn": (args.svs_itn==1),
+                          "wav_name": "microphone", "is_speaking": True, "hotwords":hotword_msg, "itn": (args.itn==1), 
                           "vad_tail_sil": args.vad_tail_sil, "vad_max_len": args.vad_max_len, "svs_lang": args.svs_lang})
     #voices.put(message)
     await websocket.send(message)
@@ -198,9 +195,6 @@ async def record_from_scp(chunk_begin, chunk_size):
 
     sample_rate = args.audio_fs
     wav_format = "pcm"
-    use_itn=True
-    if args.use_itn == 0:
-        use_itn=False
      
     if chunk_size > 0:
         wavs = wavs[chunk_begin:chunk_begin + chunk_size]
@@ -240,7 +234,7 @@ async def record_from_scp(chunk_begin, chunk_size):
 
         # send first time
         message = json.dumps({"mode": args.mode, "chunk_size": args.chunk_size, "chunk_interval": args.chunk_interval, "audio_fs":sample_rate,
-                          "wav_name": wav_name, "wav_format": wav_format,  "is_speaking": True, "hotwords":hotword_msg, "itn": use_itn, "svs_itn": (args.svs_itn==1),
+                          "wav_name": wav_name, "wav_format": wav_format,  "is_speaking": True, "hotwords":hotword_msg, "itn": (args.itn==1),
                           "vad_tail_sil": args.vad_tail_sil, "vad_max_len": args.vad_max_len, "svs_lang": args.svs_lang})
         #voices.put(message)
         await websocket.send(message)
