@@ -96,7 +96,7 @@ void runReg(FUNASR_HANDLE tpass_handle, std::vector<int> chunk_size, vector<stri
                     is_final = false;
             }
             FUNASR_RESULT result = FunTpassInferBuffer(tpass_handle, tpass_online_handle, speech_buff+sample_offset, step, punc_cache, is_final, 
-                                                        sampling_rate_, "pcm", (ASR_TYPE)asr_mode_, hotwords_embedding, true, 250, 20000, decoder_handle);
+                                                        sampling_rate_, "pcm", (ASR_TYPE)asr_mode_, hotwords_embedding, true, 500, 20000, decoder_handle);
             if (result)
             {
                 FunASRFreeResult(result);

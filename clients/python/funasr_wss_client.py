@@ -70,7 +70,7 @@ parser.add_argument("--itn",
                     help="1 for using itn, 0 for not itn")
 parser.add_argument("--vad_tail_sil",
                     type=int,
-                    default=350,
+                    default=500,
                     help="tail silence length for VAD, in ms. "
                     "if consecutive silence time exceed this value, VAD will cut.")
 parser.add_argument("--vad_max_len",

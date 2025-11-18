@@ -71,10 +71,14 @@ void ContextGraph::BuildContextGraph(
     int prev_state = start_state;
     int next_state = start_state;
     float escape_score = 0;
+    float score = 3.0;
     for (size_t i = 0; i < words.size(); ++i) {
       int word_id = symbol_table_->Find(words[i]);
-      float score = (i * config_.incremental_context_score
-                     + cur_context_score) * UTF8StringLength(words[i]);
+      if (i==words.size()-1) {
+        // we only add context score to the last word, other words' score is 3.0
+        score = (i * config_.incremental_context_score
+                + cur_context_score) * UTF8StringLength(words[i]);
+      }
       next_state = (i < words.size() - 1) ? ofst->AddState() : start_state;
       ofst->AddArc(prev_state,
                    fst::StdArc(word_id, word_id, score, next_state));

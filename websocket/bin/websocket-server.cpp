@@ -162,8 +162,8 @@ void WebSocketServer::on_open(websocketpp::connection_hdl hdl) {
   data_msg->msg["wav_format"] = "pcm";
   data_msg->msg["wav_name"] = "wav-default-id";
   data_msg->msg["itn"] = true;
-  data_msg->msg["vad_tail_sil"] = 800;
-  data_msg->msg["vad_max_len"] = 60000;
+  data_msg->msg["vad_tail_sil"] = 500;
+  data_msg->msg["vad_max_len"] = 20000;
   data_msg->msg["audio_fs"] = 16000; // default is 16k
   data_msg->msg["access_num"] = 0; // the number of access for this object, when it is 0, we can free it saftly
   data_msg->msg["is_eof"]=false;
@@ -363,6 +363,7 @@ void WebSocketServer::on_message(websocketpp::connection_hdl hdl,
       }
       if (jsonresult.contains("itn")) {
         msg_data->msg["itn"] = jsonresult["itn"];
+        msg_data->msg["svs_itn"] = jsonresult["itn"];
       }
       if (jsonresult.contains("vad_tail_sil")) {
           msg_data->msg["vad_tail_sil"] = jsonresult["vad_tail_sil"];
@@ -374,9 +375,9 @@ void WebSocketServer::on_message(websocketpp::connection_hdl hdl,
       if (jsonresult.contains("svs_lang")) {
         msg_data->msg["svs_lang"] = jsonresult["svs_lang"];
       }
-      if (jsonresult.contains("svs_itn")) {
-        msg_data->msg["svs_itn"] = jsonresult["svs_itn"];
-      }
+      // if (jsonresult.contains("svs_itn")) {
+      //   msg_data->msg["svs_itn"] = jsonresult["svs_itn"];
+      // }
       if ((jsonresult["is_speaking"] == false ||
           jsonresult["is_finished"] == true) && 
           msg_data->msg["is_eof"] != true && 
